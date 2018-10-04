@@ -48,4 +48,43 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
         return self.name
 
+class Post(models.Model):
+    """Submit your content for review."""
+    user_profile = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+    title = models.CharField(max_length=500)
+    SUB_TYPE = (
+              ('CG','Curriculum Guide'),
+              ('TK','Assignment Task'), 
+              ('WB','Workbook'),
+              ('PC', 'Practical'),
+              ('PJ', 'Project'),
+              ('OD','Others')
+                )
+    type_of_submission = models.CharField(max_length = 3, choices= SUB_TYPE)
+    grade = models.CharField(max_length=500)
+    subject = models.CharField(max_length=500)
+    description = models.TextField()
+    magnet_link = models.CharField(max_length=10000, unique=True)
+    backup_link = models.CharField(max_length=1000,blank=True, null=True, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Review(models.Model):
+    user_profile = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+    description = models.TextField()
+    magnet_link = models.CharField(max_length=10000, blank=True, null=True, unique=True)
+    backup_link = models.CharField(max_length=1000,blank=True, null=True, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together= ('user_profile', 'post_id')
+
+    def __str__(self):
+        return self.post.title
 

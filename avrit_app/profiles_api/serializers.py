@@ -31,3 +31,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
 				setattr(instance, attr, value)
 		instance.save()
 		return instance
+
+
+class PostSerializer(serializers.ModelSerializer):
+	"""A serializer for post."""
+	class Meta:
+		model = models.Post
+		fields = ('id', 'user_profile', 'title','type_of_submission', 'grade','subject','description','magnet_link','backup_link','created_at','updated_at')
+		
+
+class ReviewSerializer(serializers.ModelSerializer):
+	"""A serializer for Review."""
+
+	class Meta:
+		model = models.Review
+		fields = ('id', 'user_profile', 'post_id','description','magnet_link','backup_link','created_at','updated_at')
+	
