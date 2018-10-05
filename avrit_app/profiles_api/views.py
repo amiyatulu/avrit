@@ -13,8 +13,6 @@ from . import models
 from . import permissions
 from . import serializers
 from rest_framework import generics
-from django.shortcuts import get_object_or_404
-
 
 
 # Create your views here.
@@ -140,82 +138,70 @@ class ReviewViewSet(viewsets.ViewSet):
     """Handles creating, reading and upating Review items."""
 
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.PostOwnStatus, IsAuthenticatedOrReadOnly)
+    
+    def get_permissions(self):
+        if self.action in ('list','create', None):
+            permission_classes = (permissions.ReviewPostPer, IsAuthenticatedOrReadOnly)
+        else:
+            permission_classes = (permissions.PostOwnStatus,permissions.ReviewPostPer, permissions.ReviewPer, IsAuthenticatedOrReadOnly)
+
+        return [permission() for permission in permission_classes]
 
 
     def list(self, request, pid):
-        obj = models.Post.objects.filter(pk=pid).first()
-        if obj:
-            queryset = models.Review.objects.filter(post_id=pid)
-            serializer = serializers.ReviewSerializer(queryset, many=True)
-            return Response(serializer.data)
-        else:
-            return Response({'message': "Post does not exists"})
+        queryset = models.Review.objects.filter(post_id=pid)
+        serializer = serializers.ReviewSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request,pid):
         """Create a new hello message."""
-        obj = models.Post.objects.filter(pk=pid).first()
-        if obj:
-            request.data['post_id'] = pid
-            request.data['user_profile'] = self.request.user.id
-            serializer = serializers.ReviewSerializer(data=request.data)
 
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                return Response(
-                    serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({'message': "Post does not exists"})
-    def retrieve(self, request,pid, pk=None):
-        """Handles getting any object by its ID."""
-        obj = models.Post.objects.filter(pk=pid).first()
-        if obj:
-            query = models.Review.objects.get(post_id=pid, pk=pk)
-            serializer = serializers.ReviewSerializer(query)
+        request.data['post_id'] = pid
+        request.data['user_profile'] = self.request.user.id
+        serializer = serializers.ReviewSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data)
         else:
-            return Response({'message': "Review does not exists"})
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def retrieve(self, request,pid, pk=None):
+        """Handles getting any object by its ID."""
+        query = models.Review.objects.get(post_id=pid, pk=pk)
+        serializer = serializers.ReviewSerializer(query)
+        return Response(serializer.data)
+            
 
     def update(self, request, pid, pk=None):
-        obj = models.Post.objects.filter(pk=pid).first()
-        if obj:
-            query = models.Review.objects.get(post_id=pid, pk=pk)
-            request.data['post_id'] = pid
-            request.data['user_profile'] = self.request.user.id
-            serializer = serializers.ReviewSerializer(query,data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({'message': "Post does not exists"})
 
+        query = models.Review.objects.get(post_id=pid, pk=pk)
+        request.data['post_id'] = pid
+        request.data['user_profile'] = self.request.user.id
+        serializer = serializers.ReviewSerializer(query,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
 
     def partial_update(self, request,pid, pk=None):
-        obj = models.Post.objects.filter(pk=pid).first()
-        if obj:
-            query = models.Review.objects.get(post_id=pid, pk=pk)
-            request.data['post_id'] = pid
-            request.data['user_profile'] = self.request.user.id
-            serializer = serializers.ReviewSerializer(query, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({'message': "Post does not exists"})
 
-    def destroy(self, request, pk=None):
-        obj = models.Post.objects.filter(pk=pid).first()
-        if obj:
-            query = models.Review.objects.get(post_id=pid, pk=pk)
-            query.delete()
-            return Response({'message':'object deleted'})
-        else:
-            return Response({'message': "Post does not exists"})
+        query = models.Review.objects.get(post_id=pid, pk=pk)
+        request.data['post_id'] = pid
+        request.data['user_profile'] = self.request.user.id
+        serializer = serializers.ReviewSerializer(query, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      
 
-
-
+    def destroy(self, request, pid, pk=None):
+        
+        query = models.Review.objects.get(post_id=pid, pk=pk)
+        query.delete()
+        return Response({'message':'object deleted'})
+        
 
