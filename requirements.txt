@@ -1,4 +1,4 @@
 Django
 djangorestframework
 pytz
-psycopg2
+psycopg2-binary
