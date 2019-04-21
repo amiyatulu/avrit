@@ -14,10 +14,10 @@ class UpdateOwnProfile(permissions.BasePermission):
         return obj.id == request.user.id
 
 class PostOwnStatus(permissions.BasePermission):
-    """Allow users to update their own status."""
+    """Allow users to update their own post status."""
 
     def has_object_permission(self,request, view, obj):
-        """Checks the user is trying to update their own status."""
+        """Checks the user is trying to update their own post status."""
 
         if request.method in permissions.SAFE_METHODS:
             return True
@@ -25,7 +25,7 @@ class PostOwnStatus(permissions.BasePermission):
         return obj.user_profile.id == request.user.id
 
 class ReviewPer(permissions.BasePermission):
-    """Allow users to update their own status."""
+    """Chenck if review exists for a particular post"""
 
     def has_permission(self, request, view):
             try:
@@ -34,7 +34,7 @@ class ReviewPer(permissions.BasePermission):
             except models.Review.DoesNotExist:
                 return False
 class ReviewPostPer(permissions.BasePermission):
-    """Allow users to update their own status."""
+    """Check if post exists"""
 
     def has_permission(self, request, view):
         obj = models.Post.objects.filter(pk=view.kwargs['pid']).first()

@@ -1,0 +1,6 @@
+apienv
+avrit_app/profiles_api/migrations
+avrit_app/avrit_app/__pycache__/
+avrit_app/profiles_api/__pycache__/
+avrit_app/db.sqlite3
+

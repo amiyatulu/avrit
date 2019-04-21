@@ -37,13 +37,43 @@ class PostSerializer(serializers.ModelSerializer):
 	"""A serializer for post."""
 	class Meta:
 		model = models.Post
-		fields = ('id', 'user_profile', 'title','type_of_submission', 'grade','subject','description','magnet_link','backup_link','created_at','updated_at')
-		
+		fields = "__all__"
+
+class PostUploadSerializer(serializers.ModelSerializer):
+	"""A serializer for post upload."""
+
+	class Meta:
+		model = models.PostUpload
+		fields = "__all__"
+
+class PostCommentSerializer(serializers.ModelSerializer):
+	""" A serializer for post comment."""
+	class Meta:
+		model = models.PostComment
+		fields = "__all__"
+
 
 class ReviewSerializer(serializers.ModelSerializer):
 	"""A serializer for Review."""
 
 	class Meta:
 		model = models.Review
-		fields = ('id', 'user_profile', 'post_id','description','magnet_link','backup_link','created_at','updated_at')
+		fields = "__all__"
+
+class ReviewUploadSerializer(serializers.ModelSerializer):
+	"""A serializer for Review upload."""
+
+	class Meta:
+		model = models.ReviewUpload
+		fields = "__all__"
+
+class ReviewCommentSerializer(serializers.ModelSerializer):
+	""" A serializer for Review comment."""
+	class Meta:
+		model = models.ReviewComment
+		fields = "__all__"
+
+
+
+
 	

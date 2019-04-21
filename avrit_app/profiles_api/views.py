@@ -3,10 +3,8 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import filters
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from . import models
@@ -107,25 +105,16 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserProfileSerializer
     queryset = models.UserProfile.objects.all()
 
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JSONWebTokenAuthentication,)
     permission_classes = (permissions.UpdateOwnProfile,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'email',)
 
-class LoginViewSet(viewsets.ViewSet):
-    """Checks email and password and returns an auth token."""
-
-    serializer_class = AuthTokenSerializer
-
-    def create(self, request):
-        """Use the ObtainAuthToken APIView to validate and create a token."""
-
-        return ObtainAuthToken().post(request)
 
 class PostViewSet(viewsets.ModelViewSet):
     """Handles creating, reading and upating post feed items."""
 
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JSONWebTokenAuthentication,)
     serializer_class = serializers.PostSerializer
     queryset = models.Post.objects.all()
     permission_classes = (permissions.PostOwnStatus, IsAuthenticatedOrReadOnly)
@@ -137,7 +126,7 @@ class PostViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ViewSet):
     """Handles creating, reading and upating Review items."""
 
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (JSONWebTokenAuthentication,)
     
     def get_permissions(self):
         if self.action in ('list','create', None):
