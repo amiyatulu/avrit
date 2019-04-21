@@ -81,6 +81,8 @@ class PostUpload(models.Model):
         related_name="post_upload",
         related_query_name="post_upload",
     )
+    description = models.TextField()
+    revision = models.BooleanField(default=False)
     file_upload = models.FileField(upload_to="post")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -133,6 +135,8 @@ class ReviewUpload(models.Model):
         related_name="review_upload",
         related_query_name="review_upload",
     )
+    description = models.TextField()
+    revision = models.BooleanField(default=False)
     file_upload = models.FileField(upload_to="review")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
