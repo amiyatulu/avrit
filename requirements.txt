@@ -1,7 +1,7 @@
 astroid==2.2.5
 certifi==2019.3.9
 chardet==3.0.4
-Django==2.1.7
+Django==2.2.13
 django-cors-headers==2.5.2
 djangorestframework==3.9.2
 djangorestframework-jwt==1.11.0
